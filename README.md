@@ -53,7 +53,7 @@ Method 2: Manual Installation
 If you prefer to manually install the plugin, follow these steps:
 
 1.  **Download the Plugin Files**  
-    Go to the GitHub repository and download the plugin ZIP file by clicking on the green "Code" button and selecting **Download ZIP**: [WC Payments Plugin - GitHub](https://github.com/ahbagheri79/WC-payments) 📥
+    Go to the GitHub repository and download the plugin ZIP file by clicking on the green "Code" button and selecting **Download ZIP**: [WC Payments Plugin - GitHub](https://github.com/ahbagheri79/WC-payments/releases) 📥
 2.  **Extract the Plugin Files**  
     After downloading the ZIP file, extract its contents to a folder on your local machine. 🖥️
 3.  **Upload the Plugin to Your WordPress Site**  
