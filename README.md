@@ -1,8 +1,9 @@
   WC Payments Plugin Installation Guide
 
-## WC Payments Plugin Installation Guide
-# Supported Payment Gateways
-- Iran Kish
+# WC Payments Plugin Installation Guide
+-------------------------------
+## Supported Payment Gateways
+### -Iran Kish
   (More gateways coming soon)
 
 ---
@@ -10,7 +11,7 @@
 ## Tested with:
 - WordPress version 6.7
 - WooCommerce version 9.5.2
-=====================================
+
 
 This guide will walk you through two methods to install the **WC Payments Plugin** in your WordPress site: using **WP-CLI** or manually uploading the plugin files. 🚀
 
