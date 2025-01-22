@@ -204,40 +204,31 @@ function IRK_Gateway()
 
             public function send_to_gateway($order_id)
             {
-                // استفاده از get_order به جای $woocommerce->session برای ذخیره شناسه سفارش
                 $order = wc_get_order($order_id);
                 if (!$order) {
-                    return; // بررسی معتبر بودن سفارش
+                    return;
                 }
 
-                // تعیین ارز سفارش
                 $currency = $order->get_currency();
                 $currency = apply_filters('WC_IranKish_Currency', $currency, $order_id);
                 $action = $this->hookname;
 
-                // فراخوانی اکشن‌های مورد نظر
                 do_action('WC_Gateway_Payment_Actions', $action);
 
-                // محاسبه مبلغ سفارش
                 $Amount = intval($order->get_total());
                 $Amount = apply_filters('woocommerce_order_amount_total_IRANIAN_gateways_before_check_currency', $Amount, $currency);
 
-                // بررسی ارز و اعمال تغییرات بر اساس آن
                 $Amount = $this->adjust_amount_for_currency($Amount, $currency);
 
-                // اعمال فیلترهای مختلف بر مبلغ سفارش
                 $Amount = apply_filters('woocommerce_order_amount_total_IRANIAN_gateways_after_check_currency', $Amount, $currency);
                 $Amount = apply_filters('woocommerce_order_amount_total_IRANIAN_gateways_irr', $Amount, $currency);
                 $Amount = apply_filters('woocommerce_order_amount_total_IranKish_gateway', $Amount, $currency);
 
-                // ارسال اکشن برای پرداخت
                 do_action('WC_IranKish_Gateway_Payment', $order_id);
 
-                // ایجاد URL برای بازگشت به سایت بعد از پرداخت
                 $callBackUrl = add_query_arg('wc_order', $order_id, WC()->api_request_url('IranKish_Class'));
                 $token = $this->generateAuthenticationEnvelope($this->pubKey, $this->terminalID, $this->password, $Amount);
 
-                // ساخت داده‌های درخواست API
                 $data = [
                     "request" => [
                         "acceptorId" => $this->acceptOrId,
@@ -254,14 +245,11 @@ function IRK_Gateway()
                 ];
                 $data_string = json_encode($data);
 
-                // ذخیره لاگ برای تحلیل خطاها
                 file_put_contents(ABSPATH . 'iksplugin-logs/send_to_gateway.txt', $data_string . PHP_EOL, FILE_APPEND);
 
-                // ارسال درخواست CURL به API
                 $response = $this->send_api_request('https://ikc.shaparak.ir/api/v3/tokenization/make', $data_string);
 
                 if ($response) {
-                    // بررسی موفقیت یا شکست پاسخ
                     if ($response["responseCode"] != "00") {
                         $this->handle_error($order_id, $response["responseCode"]);
                     } else {
@@ -355,20 +343,15 @@ function IRK_Gateway()
 
             public function thankyou_hook($order_id)
             {
-                // دریافت وضعیت سفارش با استفاده از wc_get_order
                 $order = wc_get_order($order_id);
                 $order_status = $order->get_status();
 
-                // بررسی وضعیت سفارش برای تعیین وضعیت کلی
                 $order_status = in_array($order_status, ['completed', 'processing']) ? 'ok' : 'nok';
 
-                // تعیین رنگ برای وضعیت
                 $status = ($order_status == 'ok') ? 'green' : 'red';
 
-                // دریافت پیام متا سفارش
                 $wc_irankish_order_notice = get_post_meta($order_id, 'wc_irankish_order_notice', true);
 
-                // نمایش پیام با استایل مناسب
                 if (!empty($wc_irankish_order_notice)) {
                     echo "<div style='background:$status;padding:8px;border-radius:15px;color:white;font-weight:bold;text-align:center;'>$wc_irankish_order_notice</div>";
                 }
@@ -376,17 +359,15 @@ function IRK_Gateway()
 
             public function get_order_status($text, $order)
             {
-                // بررسی وضعیت سفارش و بازگشت متن بر اساس آن
                 if (in_array($order->get_status(), ['completed', 'processing'])) {
                     return $text;
                 }
-                return ''; // در غیر این صورت، رشته خالی باز می‌گردد
+                return '';
             }
 
 
             public function return_from_gateway()
             {
-                // دسترسی به سفارش با استفاده از WC_Order
                 if (isset($_GET['wc_order'])) {
                     $order_id = sanitize_text_field($_GET['wc_order']);
                 } else {
@@ -398,12 +379,10 @@ function IRK_Gateway()
                     $currency = $order->get_currency();
                     $currency = apply_filters('WC_IranKish_Currency', $currency, $order_id);
 
-                    // بررسی وضعیت سفارش
                     if ($order->get_status() !== 'completed') {
                         $amount = intval($order->get_total());
                         $amount = apply_filters('woocommerce_order_amount_total_IRANIAN_gateways_before_check_currency', $amount, $currency);
 
-                        // تبدیل ارز به تومان یا سایر واحدها
                         $currency_lower = strtolower($currency);
                         if (in_array($currency_lower, ['irt', 'toman', 'iran toman', 'iranian toman', 'iran-toman', 'iranian-toman', 'iran_toman', 'iranian_toman', 'تومان', 'تومان ایران'])) {
                             $amount *= 10;
@@ -417,7 +396,6 @@ function IRK_Gateway()
                         $amount = apply_filters('woocommerce_order_amount_total_IRANIAN_gateways_irr', $amount, $currency);
                         $amount = apply_filters('woocommerce_order_amount_total_IranKish_gateway', $amount, $currency);
 
-                        // بررسی نتیجه پرداخت
                         $status = 'failed';
                         $fault = 0;
                         file_put_contents(ABSPATH . 'iksplugin-logs/return_from_gateway.txt', json_encode(['post' => $_POST, 'get' => $_GET]) . PHP_EOL, FILE_APPEND);
@@ -460,7 +438,6 @@ function IRK_Gateway()
                             }
                         }
 
-                        // پردازش وضعیت‌ها
                         if ($status !== 'cancelled' && $status !== 'completed') {
                             $status = 'failed';
                         }
@@ -495,7 +472,7 @@ function IRK_Gateway()
                             wp_redirect(add_query_arg('wc_status', 'success', $this->get_return_url($order)));
                             exit;
                         } elseif ($status === 'cancelled') {
-                            // پردازش وضعیت لغو
+
                             $action = $this->hookname;
                             do_action('WC_Gateway_Payment_Actions', $action);
 
@@ -516,7 +493,7 @@ function IRK_Gateway()
                             wp_redirect(add_query_arg('wc_status', 'error', $this->get_return_url($order)));
                             exit;
                         } else {
-                            // پردازش وضعیت خطا
+
                             $action = $this->hookname;
                             do_action('WC_Gateway_Payment_Actions', $action);
 
@@ -540,7 +517,6 @@ function IRK_Gateway()
                             exit;
                         }
                     } else {
-                        // اگر سفارش تکمیل شده باشد
                         $action = $this->hookname;
                         do_action('WC_Gateway_Payment_Actions', $action);
 
