@@ -32,7 +32,7 @@ function Zibal_Gateway()
                 $this->id = 'zibal_pay';
                 $this->method_title = 'درگاه پرداخت زیبال';
                 $this->method_description = 'پیکره بندی درگاه پرداخت زیبال';
-                $this->icon = apply_filters('zibal_logo', $this->pluginFolderName . '/assets/zibal.webp');
+                $this->icon = apply_filters('zibal_logo', $this->pluginFolderName . '/assets/zibal.png');
                 $this->has_fields = false;
 
                 $this->init_form_fields();
