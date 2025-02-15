@@ -13,3 +13,4 @@ if (!defined('ABSPATH')) {
 }
 
 require_once('includes/irankish.php');
+require_once('includes/zibal.php');

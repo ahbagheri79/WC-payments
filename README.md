@@ -4,6 +4,7 @@
 -------------------------------
 ## Supported Payment Gateways
 ### -Iran Kish
+### -Zibal
   (More gateways coming soon)
 
 ---
@@ -88,5 +89,7 @@ Feel free to reach out via GitHub Issues if you encounter any problems! 💬
 
 ## Release Notes
 ---------------
+### 1.0.2
+- Added support for Zibal payment gateway.
 ### 1.0.1
 - Added support for Iran Kish payment gateway.

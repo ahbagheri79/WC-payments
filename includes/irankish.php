@@ -2,8 +2,8 @@
 if (!defined('ABSPATH')) exit;
 function IRK_Gateway()
 {
-    if( ! is_dir( ABSPATH . 'iksplugin-logs' ) ) {
-        mkdir( ABSPATH . 'iksplugin-logs', 0755, true );
+    if( ! is_dir( ABSPATH . 'pwplugin-logs' ) ) {
+        mkdir( ABSPATH . 'pwplugin-logs', 0755, true );
     }
 
     if (class_exists('WC_Payment_Gateway') && !class_exists('IranKish_Class') && !function_exists('Woocommerce_Add_IranKish_Gateway')) {
